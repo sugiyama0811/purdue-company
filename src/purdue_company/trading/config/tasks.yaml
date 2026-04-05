@@ -1,0 +1,191 @@
+fetch_and_analyze_task:
+  description: >
+    Fetch comprehensive technical data for "{ticker}" and perform a full
+    technical analysis.
+
+    IMPORTANT — INSTRUMENT TYPE DETECTION:
+    - If ticker ends in "=F" (e.g. ES=F, NQ=F, YM=F): this is a FUTURES contract
+    - Otherwise: treat as a stock ticker (e.g. AAPL, NVDA, TSLA)
+    - For futures: note contract specs in the report (ES = $50/point, NQ = $20/point)
+    - Micro futures equivalents: MES=F (ES Micro, $5/pt), MNQ=F (NQ Micro, $2/pt)
+
+    Use the stock_data_fetcher tool with:
+    - period="5d", interval="15m"  (primary intraday view)
+    - period="1mo", interval="1h"  (higher timeframe context)
+
+    Analyze the following:
+
+    1. TREND STRUCTURE
+       - 1h chart: uptrend, downtrend, or consolidation?
+       - 15m chart: is price above or below VWAP?
+       - Last significant swing high and swing low
+       - For futures: overnight session high/low, pre-market range
+
+    2. MOMENTUM
+       - RSI reading and divergence
+       - MACD histogram trend (expanding or contracting?)
+       - Momentum accelerating or fading?
+
+    3. VOLATILITY
+       - Current ATR and what it implies for stop placement
+       - Bollinger Band width (expanding vs contracting)
+       - Price at/near a Bollinger Band extreme?
+
+    4. VOLUME
+       - Today's volume vs 20-period average
+       - Volume spikes confirming or denying price moves
+
+    5. KEY LEVELS
+       - VWAP, 20-candle support and resistance
+       - For futures: prior day high/low, weekly open, key round numbers (4000, 4050, etc.)
+
+    Provide all raw numbers with interpretations.
+  expected_output: >
+    Technical analysis report with exact indicator values and interpretations in
+    5 sections (Trend, Momentum, Volatility, Volume, Key Levels). Instrument type
+    noted (stock vs futures) with contract specs if futures. All numbers to 2
+    decimal places. 400-600 words.
+  agent: market_data_analyst
+
+identify_setups_task:
+  description: >
+    Based on the technical analysis of "{ticker}", identify all valid day trading
+    setups present in the current price action.
+
+    For EACH setup, specify all of the following fields:
+
+    SETUP NAME: (e.g. "Bullish Flag Breakout", "VWAP Reclaim Long", "Opening Range
+    Breakout", "RSI Oversold Bounce", "Resistance Rejection Short", "ORB Long",
+    "Failed Breakdown Reversal")
+
+    INSTRUMENT TYPE: Stock or Futures (include contract spec if futures)
+
+    TIMEFRAME: Which interval shows this most clearly? (5m, 15m, 1h)
+
+    ENTRY TRIGGER: Exact price action event that triggers entry
+    (e.g. "15m candle closes above $X resistance with volume > 1.5x average")
+
+    ENTRY PRICE ZONE: $X.XX — $X.XX
+
+    STOP LOSS: $X.XX
+    RATIONALE: Why this is the structurally correct stop (not arbitrary)
+
+    TARGET 1: $X.XX  (1:1 RR — partial exit)
+    TARGET 2: $X.XX  (2:1 RR — runner)
+    TARGET 3: $X.XX  (3:1 RR — full trend move)
+
+    REWARD-TO-RISK: X.Xx
+
+    SETUP QUALITY: A / B / C
+    A = All indicators aligned, high volume, clear structure
+    B = Most indicators aligned, minor ambiguity
+    C = Marginal, experienced traders only
+
+    INVALIDATION: Price level or event that kills this setup
+
+    Find up to 3 setups (long and/or short).
+  expected_output: >
+    Up to 3 fully specified trade setups. Each setup includes all fields listed
+    above. Futures setups explicitly state contract type and point value.
+  agent: pattern_strategist
+
+risk_assessment_task:
+  description: >
+    Perform a risk assessment for each proposed setup on "{ticker}".
+
+    FOR STOCK SETUPS (assume $10,000 cash account, 1% risk = $100/trade):
+    - Shares = $100 / (entry price − stop price)
+    - Total position value = shares × entry price
+    - Flag if position exceeds 20% of account (concentration risk)
+    - Note: cash account, T+2 settlement, no margin
+
+    FOR FUTURES SETUPS:
+    - Standard contracts (ES, NQ): note the dollar risk per tick/point
+      ES: 1 point = $50, minimum tick = 0.25 pt = $12.50
+      NQ: 1 point = $20, minimum tick = 0.25 pt = $5.00
+    - ALWAYS recommend Micro contracts first for smaller accounts:
+      MES: 1 point = $5, MNQ: 1 point = $2
+    - Calculate dollar risk for 1 Micro contract given the stop distance
+    - If stop distance in points × Micro multiplier > $100, flag as oversized
+    - Margin requirement: MES ~$40-60/contract, MNQ ~$50-80/contract (check current)
+
+    FOR ALL SETUPS:
+    1. STOP VALIDATION:
+       - Too tight (< 0.5 × ATR)? → "Will be stopped by noise"
+       - Too wide (> 2 × ATR)? → "Poor RR — skip"
+    2. TIMING RISK:
+       - Avoid first 15 min (9:30-9:45am ET) — high volatility
+       - Avoid last 30 min (3:30-4:00pm ET) — end-of-day choppiness
+       - Best time window for this setup type?
+    3. CATALYST CHECK:
+       - Search for earnings, Fed events, CPI, NFP, or major news for "{ticker}"
+    4. FINAL VERDICT: GO / WAIT / NO-GO with reason
+
+  expected_output: >
+    Risk assessment covering calculated position size (shares for stocks, contract
+    count for futures with Micro recommendation), stop validation, timing guidance,
+    catalyst check, and GO/WAIT/NO-GO verdict for each setup.
+  agent: risk_manager
+
+write_trading_report_task:
+  description: >
+    Write the final day trading intelligence report for "{ticker}" combining
+    technical analysis, setups, and risk assessment.
+
+    # Day Trading Report: {ticker}
+    *Generated: [date and time]*
+
+    ## Instrument Overview
+    - Type: [Stock / Futures — include contract specs if futures]
+    - Current price, change %, volume vs average
+    - One-sentence market structure summary
+
+    ## Technical Conditions
+    **Bullish factors:**
+    - (bullet list)
+    **Bearish factors:**
+    - (bullet list)
+    **Neutral/watch:**
+    - (bullet list)
+
+    ## Trade Setups
+
+    ### Setup [N]: [Name] — [LONG/SHORT] — Quality: [A/B/C]
+    | Field | Value |
+    |-------|-------|
+    | Entry Zone | $X.XX — $X.XX |
+    | Stop Loss | $X.XX |
+    | Target 1 | $X.XX (1:1 RR) |
+    | Target 2 | $X.XX (2:1 RR) |
+    | Target 3 | $X.XX (3:1 RR) |
+    | RR Ratio | X.Xx |
+    | Position Size | [X shares at $10k / X Micro contracts] |
+    | Dollar Risk | $X.XX |
+    | Status | GO / WAIT / NO-GO |
+
+    *Rationale: [2-3 sentences]*
+
+    ## Risk Summary
+    - Key risks to all setups today
+    - What changes the thesis
+
+    ## Trader's Checklist
+    - [ ] Entry trigger confirmed before placing order
+    - [ ] Position size verified (max $100 risk / 1% rule)
+    - [ ] Stop-loss order placed immediately on entry
+    - [ ] Not trading 9:30-9:45am or 3:30-4:00pm ET windows
+    - [ ] No earnings or major macro catalyst within 48h
+    - [ ] For futures: using Micro contracts (MES/MNQ) to limit exposure
+    - [ ] TradingView chart reviewed for visual confirmation
+
+    ## Disclaimer
+    *Educational purposes only. Not financial advice. Futures trading involves
+    substantial risk and is not suitable for all investors.*
+
+    Save to output/trading_report.md
+  expected_output: >
+    Complete, professionally formatted markdown trading report saved to
+    output/trading_report.md. Tables for each setup, futures-aware position
+    sizing, trader checklist, and disclaimer. 600-900 words.
+  agent: trading_report_writer
+  output_file: "output/trading_report.md"

@@ -1,0 +1,183 @@
+research_opportunities_task:
+  description: >
+    Research current passive income opportunities matching this focus: "{income_query}"
+
+    Search across ALL of the following categories and surface the best current
+    opportunities in each:
+
+    1. INVESTMENT INCOME (legal for F-1 visa holders):
+       - Dividend stocks & ETFs (SCHD, VYM, JEPI, covered call ETFs)
+       - REITs (real estate investment trusts — can be held as stocks)
+       - High-yield savings accounts, T-bills, money market funds
+       - Index fund investing strategies (VOO, QQQ dollar-cost averaging)
+
+    2. AI-ASSISTED DIGITAL PRODUCTS (can be created once, sold repeatedly):
+       - Notion templates, Canva templates, Excel/Google Sheets tools
+       - Technical e-books (ME study guides, engineering cheatsheets)
+       - CAD model libraries (Thingiverse, GrabCAD, Cults3D)
+       - AI-generated educational content (Udemy, Gumroad, Teachable)
+       - Bilingual content for Japanese/Mandarin/English markets
+
+    3. AI MICRO-SAAS & TOOLS:
+       - No-code/low-code tools (Bubble, Webflow + GPT API)
+       - Chrome extensions, VSCode plugins
+       - Automated research tools, report generators
+       - Niche AI assistants for engineering or trading
+
+    4. CONTENT MONETIZATION (low active maintenance):
+       - YouTube automation with AI (scriptwriting + voice)
+       - Newsletter/blog with affiliate links (engineering, trading, student life)
+       - Pinterest + affiliate marketing (engineering tools, textbooks)
+       - Twitter/X thought leadership → course sales
+
+    5. ALGORITHMIC / SYSTEMATIC APPROACHES:
+       - Systematic dividend reinvestment strategies
+       - Automated covered call strategies on stock holdings
+       - Options wheel strategy (NOTE: only if/when user upgrades from F-1 restrictions)
+
+    For each opportunity found, note:
+    - Current market size and demand signals
+    - Real examples of people doing this successfully (with income proof if available)
+    - F-1 visa legal status (CONFIRMED LEGAL / GRAY AREA / AVOID)
+    - Platform or marketplace involved
+  expected_output: >
+    A structured list of 10-15 passive income opportunities organized by category.
+    Each entry: opportunity name, brief description, real examples found online,
+    F-1 visa legal status, estimated startup cost range, and platform/marketplace.
+  agent: opportunity_researcher
+
+analyze_feasibility_task:
+  description: >
+    Evaluate each passive income opportunity found for the specific profile:
+    - Purdue ME student, international (F-1 visa), from Taiwan
+    - Speaks English, Mandarin, Japanese
+    - Skills: mechanical engineering, some programming, CAD/SolidWorks, MATLAB
+    - Has trading experience (stocks, futures)
+    - Limited capital (student budget: assume $1,000-$5,000 available to invest)
+    - Limited time (15-20 hours/week outside of classes)
+    - Goal: passive income that requires minimal daily involvement
+
+    For each opportunity, score it on a 1-10 scale across:
+    - INCOME POTENTIAL: How much can realistically be earned per month at scale?
+    - EASE OF ENTRY: How hard is it to start? (10 = very easy)
+    - PASSIVITY: How truly passive is it? (10 = zero ongoing work)
+    - SCALABILITY: Can it grow without proportionally more work?
+    - LEGAL SAFETY: How clearly legal is it for F-1 status? (10 = crystal clear)
+
+    Also provide:
+    - Realistic income range: low / mid / high estimate ($/month) at 6-month mark
+    - Time to first dollar: days/weeks/months
+    - Key risk factors
+    - Unique advantage this user has for this opportunity
+      (e.g., "Mandarin skills open Japanese/Taiwanese markets", "ME knowledge
+      enables technical content that sells at premium")
+  expected_output: >
+    A scored comparison table of all opportunities with numeric scores (1-10) in
+    each dimension, realistic income estimates, time-to-first-dollar, key risks,
+    and the user's unique advantage for each. Opportunities ranked by total score.
+  agent: feasibility_analyst
+
+build_strategy_task:
+  description: >
+    Based on the feasibility analysis, build a prioritized passive income roadmap
+    for this user. Focus on "{income_query}" but cover the best overall strategy.
+
+    Structure the roadmap as follows:
+
+    TIER 1 — START NOW (this week, $0-$100 cost, quick wins):
+    - 2-3 opportunities the user can start immediately
+    - Specific first action for each
+
+    TIER 2 — BUILD THIS MONTH ($100-$1000 investment, 30-day setup):
+    - 2-3 opportunities that compound over time
+    - Step-by-step setup instructions
+
+    TIER 3 — SCALE IN 3-6 MONTHS (requires skills/capital to build first):
+    - 1-2 high-upside opportunities worth working toward
+    - What needs to be in place first
+
+    For each opportunity in the roadmap:
+    - The exact first step (with specific URL/platform/tool)
+    - Realistic month-1, month-3, month-6 income projections
+    - Weekly time commitment once set up (target: <2 hrs/week)
+    - The compounding effect (how does it grow over time?)
+
+    LEVERAGE IDENTIFICATION:
+    - How can the user's multilingual skills (Mandarin, Japanese) create an
+      advantage in any of these income streams?
+    - How can ME/engineering knowledge differentiate the user's products or content?
+    - How can trading experience be monetized passively?
+
+    INCOME PORTFOLIO TARGET:
+    - What combination of these streams could reach $500/month passive?
+    - What combination could reach $2,000/month passive?
+    - Timeline to reach each milestone
+  expected_output: >
+    A three-tiered passive income roadmap with specific actions, platforms, income
+    projections, and time commitments. Portfolio targets for $500/mo and $2,000/mo
+    milestones with realistic timelines. Leverage analysis for user's unique skills.
+  agent: income_strategist
+
+write_income_report_task:
+  description: >
+    Write the final passive income playbook document combining all research,
+    analysis, and strategy.
+
+    # Passive Income Playbook
+    *For: Purdue ME Student | International (F-1) | Focus: {income_query}*
+
+    ## Your Income Opportunity Profile
+    - Your unfair advantages (technical skills, multilingual, trading experience)
+    - F-1 visa income rules summary (what IS and IS NOT allowed)
+    - Starting position and realistic targets
+
+    ## Top 5 Recommended Opportunities
+    For each (table format):
+    | Attribute | Details |
+    |-----------|---------|
+    | Opportunity | [Name] |
+    | Category | [Investment / Digital Product / Content / SaaS] |
+    | Monthly Income Potential | $X — $X at 6 months |
+    | Startup Cost | $X |
+    | Weekly Ongoing Work | X hrs/week once set up |
+    | F-1 Legal Status | ✅ Legal / ⚠️ Verify / ❌ Avoid |
+    | Your Advantage | [specific edge] |
+    | First Step | [specific action with URL] |
+
+    ## 30-Day Action Plan
+    ### Week 1: Foundation
+    - [ ] [specific task]
+    - [ ] [specific task]
+
+    ### Week 2: Launch
+    - [ ] [specific task]
+
+    ### Week 3-4: Optimize & Scale
+    - [ ] [specific task]
+
+    ## Income Milestones
+    | Milestone | Target Date | Required Streams |
+    |-----------|-------------|-----------------|
+    | First $100/month | [month] | [streams] |
+    | $500/month | [month] | [streams] |
+    | $2,000/month | [month] | [streams] |
+
+    ## Multilingual Edge
+    - Specific ways to use Mandarin/Japanese skills for income
+
+    ## Important: F-1 Visa Compliance
+    - Summary of allowed income types
+    - What to consult an immigration attorney about
+
+    ## Disclaimer
+    *This is educational research only. Consult a qualified financial advisor
+    and immigration attorney before taking action.*
+
+    Save to output/passive_income_report.md
+  expected_output: >
+    Complete passive income playbook saved to output/passive_income_report.md.
+    Top 5 opportunities in table format, 30-day action plan with checkboxes,
+    income milestone timeline, multilingual advantage analysis, F-1 compliance
+    summary. 800-1500 words.
+  agent: income_report_writer
+  output_file: "output/passive_income_report.md"

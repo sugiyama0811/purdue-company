@@ -1,0 +1,130 @@
+research_topic_task:
+  description: >
+    Research the following mechanical engineering topic or question thoroughly:
+    "{me_query}"
+
+    Depending on the nature of the query, perform the appropriate research:
+
+    FOR COURSEWORK / CONCEPT QUESTIONS:
+    - Identify which ME subdomain this falls under (thermodynamics, fluids, heat
+      transfer, mechanics, controls, materials, manufacturing, robotics, etc.)
+    - Search for textbook explanations (Cengel, Hibbeler, Incropera, Ogata, etc.)
+    - Find relevant solved examples or derivations
+    - Identify any relevant ASME/ASTM/ISO standards if applicable
+    - Search for Purdue-specific course materials or lecture notes if available
+
+    FOR RESEARCH TOPICS:
+    - Search arXiv, IEEE Xplore, ASME Digital Collection for recent papers
+    - Identify key research groups and labs working on this topic
+    - Find open-source tools, datasets, or simulators relevant to the topic
+    - Search for review/survey papers that give a broad overview
+
+    FOR PROJECT / DESIGN QUESTIONS:
+    - Search for design guidelines, handbooks (Shigley's, Machinery's Handbook)
+    - Find real-world examples and case studies
+    - Identify relevant simulation tools (ANSYS, SolidWorks, MATLAB/Simulink, ROS)
+    - Search for open-source implementations or reference designs
+
+    Gather all relevant equations, formulas, parameters, and constraints.
+  expected_output: >
+    A comprehensive knowledge base for the query "{me_query}" including:
+    - Correct subdomain classification
+    - Relevant governing equations or principles (with variable definitions)
+    - Key references (textbook chapters, paper titles, URLs)
+    - Any important constraints, assumptions, or common pitfalls
+    - Structured as bullet points and sections for easy use by the next agent
+  agent: subject_expert
+
+solve_or_explain_task:
+  description: >
+    Based on the research gathered, address the ME query: "{me_query}"
+
+    Choose the appropriate mode:
+
+    MODE 1 — PROBLEM SOLVING (if the query involves a calculation or design):
+    1. State all given information and what is being found
+    2. List all relevant equations with proper notation
+    3. State assumptions explicitly (incompressible flow, steady state, etc.)
+    4. Show every calculation step with units
+    5. Verify the answer with dimensional analysis or a sanity check
+    6. State the final answer clearly with units
+
+    MODE 2 — CONCEPT EXPLANATION (if the query is asking to understand something):
+    1. Start with an intuitive physical explanation (no math first)
+    2. Introduce the governing equations and define every variable
+    3. Walk through the derivation or key steps
+    4. Give a concrete numerical example to solidify understanding
+    5. Note common misconceptions and exam traps
+    6. Connect to related topics the student likely knows
+
+    MODE 3 — RESEARCH SUMMARY (if the query is about a research topic):
+    1. State the problem this research area addresses
+    2. Summarize current state of the art (top 3-5 approaches)
+    3. Identify open problems and research gaps
+    4. Suggest concrete entry points (papers to read first, code to run)
+    5. Connect to Purdue ME research groups if relevant
+
+    MODE 4 — PROJECT / DESIGN GUIDANCE:
+    1. Break down the design problem into sub-problems
+    2. Recommend design approach with justification
+    3. Provide key calculations or sizing rules of thumb
+    4. List required tools/software and how to use them
+    5. Identify potential failure modes to design against
+
+    Always show work completely. Never skip mathematical steps.
+  expected_output: >
+    A complete, rigorous technical response to "{me_query}" using the appropriate
+    mode above. All equations shown with full derivation where relevant. Units
+    checked at every step. Minimum 400 words for concept questions, complete
+    solution with all steps for calculation problems.
+  agent: problem_solver
+
+write_me_report_task:
+  description: >
+    Write a polished, well-formatted academic document addressing: "{me_query}"
+
+    Combine the research and problem-solving work into a document structured for
+    the specific output type:
+
+    FOR STUDY NOTES:
+    # [Topic Name]
+    ## Core Concept
+    ## Governing Equations
+    ## Key Assumptions & When They Apply
+    ## Worked Example
+    ## Common Exam Questions & Pitfalls
+    ## Quick Reference (equations summary)
+
+    FOR PROBLEM SOLUTIONS:
+    # Solution: [Problem Description]
+    ## Given & Find
+    ## Assumptions
+    ## Solution (step-by-step)
+    ## Result
+    ## Verification
+
+    FOR RESEARCH SUMMARIES:
+    # Research Brief: [Topic]
+    ## Problem Statement
+    ## State of the Art
+    ## Key Papers (with citations)
+    ## Open Problems
+    ## Recommended Starting Points
+
+    FOR PROJECT REPORTS:
+    # [Project Name] — Technical Report
+    ## Problem Definition
+    ## Design Approach
+    ## Analysis & Calculations
+    ## Results & Recommendations
+    ## References
+
+    Use LaTeX-style math notation for equations (e.g., $Q = \dot{m} c_p \Delta T$).
+    Save to output/me_report.md.
+  expected_output: >
+    A complete, well-formatted markdown document saved to output/me_report.md.
+    Appropriate structure for the query type. Professional quality suitable for
+    submission to a Purdue ME professor. All equations properly notated.
+    400-1500 words depending on complexity.
+  agent: academic_writer
+  output_file: "output/me_report.md"
