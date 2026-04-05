@@ -1,11 +1,11 @@
 import os
 from pydantic import BaseModel
 from crewai.flow.flow import Flow, start, listen, router
-from crewai import LLM
 
 from purdue_company.me.crew import MECrew
 from purdue_company.trading.crew import TradingCrew
 from purdue_company.passive_income.crew import PassiveIncomeCrew
+from purdue_company.tools import get_llm
 
 
 class CompanyState(BaseModel):
@@ -38,12 +38,8 @@ class CompanyFlow(Flow[CompanyState]):
       3. Passive Income Division
     """
 
-    def _llm(self) -> LLM:
-        return LLM(
-            model=os.getenv("MODEL", "anthropic/claude-sonnet-4-6"),
-            api_key=os.getenv("ANTHROPIC_API_KEY"),
-            max_tokens=1024,
-        )
+    def _llm(self):
+        return get_llm(max_tokens=1024)
 
     @start()
     def classify_request(self):

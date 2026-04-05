@@ -1,10 +1,10 @@
 import os
-from crewai import Agent, Crew, Process, Task, LLM
+from crewai import Agent, Crew, Process, Task
 from crewai.project import CrewBase, agent, crew, task
-from crewai_tools import SerperDevTool
 from crewai.agents.agent_builder.base_agent import BaseAgent
 from typing import List
 
+from purdue_company.tools import get_llm, DuckDuckGoSearchTool
 from purdue_company.trading.tools import StockDataTool
 
 
@@ -18,18 +18,11 @@ class TradingCrew:
     agents_config = "config/agents.yaml"
     tasks_config = "config/tasks.yaml"
 
-    def _llm(self) -> LLM:
-        return LLM(
-            model=os.getenv("MODEL", "anthropic/claude-sonnet-4-6"),
-            api_key=os.getenv("ANTHROPIC_API_KEY"),
-            max_tokens=8096,
-        )
-
     @agent
     def market_data_analyst(self) -> Agent:
         return Agent(
             config=self.agents_config["market_data_analyst"],
-            llm=self._llm(),
+            llm=get_llm(),
             tools=[StockDataTool()],
             verbose=True,
             max_iter=6,
@@ -39,7 +32,7 @@ class TradingCrew:
     def pattern_strategist(self) -> Agent:
         return Agent(
             config=self.agents_config["pattern_strategist"],
-            llm=self._llm(),
+            llm=get_llm(),
             tools=[StockDataTool()],
             verbose=True,
             max_iter=6,
@@ -49,8 +42,8 @@ class TradingCrew:
     def risk_manager(self) -> Agent:
         return Agent(
             config=self.agents_config["risk_manager"],
-            llm=self._llm(),
-            tools=[SerperDevTool()],
+            llm=get_llm(),
+            tools=[DuckDuckGoSearchTool()],
             verbose=True,
             max_iter=5,
         )
@@ -59,7 +52,7 @@ class TradingCrew:
     def trading_report_writer(self) -> Agent:
         return Agent(
             config=self.agents_config["trading_report_writer"],
-            llm=self._llm(),
+            llm=get_llm(),
             verbose=True,
             max_iter=4,
         )
@@ -86,7 +79,7 @@ class TradingCrew:
             agents=self.agents,
             tasks=self.tasks,
             process=Process.hierarchical,
-            manager_llm=self._llm(),
+            manager_llm=get_llm(),
             verbose=True,
             output_log_file="output/trading_crew.log",
         )

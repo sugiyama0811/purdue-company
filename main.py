@@ -34,7 +34,7 @@ console = Console()
 BANNER = """
 [bold cyan]╔══════════════════════════════════════════════════════════════╗[/]
 [bold cyan]║       PURDUE RESEARCH & TRADING COMPANY                     ║[/]
-[bold cyan]║       Powered by CrewAI + Claude Sonnet                     ║[/]
+[bold cyan]║       Powered by CrewAI + Ollama (no API key required)      ║[/]
 [bold cyan]╠══════════════════════════════════════════════════════════════╣[/]
 [bold cyan]║  [green]ME Academic Division[/]    — coursework, research, design    ║[/]
 [bold cyan]║  [yellow]Financial Trading[/]       — stocks & futures (ES/NQ)        ║[/]
@@ -60,17 +60,23 @@ EXAMPLES = """[dim]
 
 
 def validate_env():
-    missing = []
-    if not os.getenv("ANTHROPIC_API_KEY"):
-        missing.append("ANTHROPIC_API_KEY")
-    if not os.getenv("SERPER_API_KEY"):
-        missing.append("SERPER_API_KEY")
-    if missing:
-        console.print(f"\n[bold red]Missing environment variables: {', '.join(missing)}[/]")
-        console.print("[yellow]Copy .env.example to .env and fill in your API keys.[/]")
-        console.print("[yellow]  ANTHROPIC_API_KEY: https://console.anthropic.com/[/]")
-        console.print("[yellow]  SERPER_API_KEY:    https://serper.dev/ (free tier available)[/]")
-        sys.exit(1)
+    """Check that at least one LLM backend is configured."""
+    has_anthropic = bool(os.getenv("ANTHROPIC_API_KEY"))
+    has_ollama = bool(os.getenv("OLLAMA_MODEL")) or True  # Ollama is always attempted
+
+    if not has_anthropic:
+        # Warn but don't exit — Ollama will be used
+        try:
+            import requests
+            r = requests.get("http://localhost:11434/api/tags", timeout=2)
+            if r.status_code != 200:
+                raise ConnectionError
+        except Exception:
+            console.print("\n[bold yellow]Ollama is not running.[/]")
+            console.print("[yellow]Start it with:[/] [bold]ollama serve[/]")
+            console.print("[yellow]Then pull a model:[/] [bold]ollama pull llama3.2[/]")
+            console.print("\n[dim]Or set ANTHROPIC_API_KEY in .env to use Claude instead.[/]")
+            sys.exit(1)
 
 
 def show_division_label(division: str):
